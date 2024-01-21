@@ -11,8 +11,10 @@ import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import toast from "react-hot-toast";
+import useLoginModal from "@/app/hooks/useLoginModal";
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -31,7 +33,9 @@ const RegisterModal = () => {
     axios
       .post("/api/register", data)
       .then(() => {
+        toast.success("Success");
         registerModal.onClose();
+        loginModal.onOpen();
       })
       .catch((error) => {
         toast.error("Something went wrong");
@@ -40,6 +44,11 @@ const RegisterModal = () => {
         setIsLoading(false);
       });
   };
+  const onToggle = useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [loginModal, registerModal]);
+
   const bodyContent = (
     <div className="flex flex-col gap-2">
       <Heading title="Welcome to Airbnb" subtitle="Create an account!" center />
@@ -97,7 +106,7 @@ const RegisterModal = () => {
         <p>
           Already have an account?
           <span
-            // onClick={onToggle}
+            onClick={onToggle}
             className="
               text-neutral-800
               cursor-pointer 
